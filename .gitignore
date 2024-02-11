@@ -1,0 +1,7 @@
+main
+main.exe
+main.test.exe
+*.elf
+*.so
+*.o
+*.gch
