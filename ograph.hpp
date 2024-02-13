@@ -75,7 +75,7 @@ class oriented_graph {
      * @param node the node to search
      * @return the index position of the given node in _nodes
      */
-    int _index(const T &node){
+    int _index(const T &node) const{
       for(size_type i=0; i<_size; i++)
         if(_eql(_nodes[i], node))
           return i;
@@ -153,11 +153,11 @@ class oriented_graph {
      *
      * @return the amount of edges in the graph
      */
-    size_type edges() const{
-      size_type count = 0;
+    int edges() const{
+      int count = 0;
 
-      for(int i=0; i<_size; i++)
-        for(int j=0; j<_size; j++)
+      for(size_type i=0; i<_size; i++)
+        for(size_type j=0; j<_size; j++)
           count += _matrix[i][j];
 
       return count;
@@ -168,8 +168,8 @@ class oriented_graph {
      *
      */
     void print() const{
-      for(int i=0; i<_size; i++){
-        for(int j=0; j<_size; j++){
+      for(size_type i=0; i<_size; i++){
+        for(size_type j=0; j<_size; j++){
           std::cout << _matrix[i][j] << " ";
         }
         std::cout << std::endl;
@@ -177,20 +177,21 @@ class oriented_graph {
     }
 
     //TODO: remove after edge methods implementations
-    void debug_setmatrix(int** data){
+    void debug_setmatrix(const int *data){
       for(int i=0; i<_size; i++){
         for(int j=0; j<_size; j++){
-          _matrix[i][j] = data[i][j];
+          // _matrix[i][j] = data[i][j];
+          _matrix[i][j] = *(data + (i*_size) + j);
         }
       }
     }
 
-    bool existsNode(T &node) const{
+    bool existsNode(const T &node) const{
       return (_index(node) != -1);
     }
 
-    bool existsEdge(T nodeFrom, T nodeTo) const{
-
+    bool existsEdge(const T nodeFrom, const T nodeTo) const{
+      return false; //TODO
     }
 
     void addNode(const T &node){
@@ -266,11 +267,11 @@ class oriented_graph {
     }
 
     void addEdge(T nodeFrom, T nodeTo){
-
+      //TODO
     }
 
     void removeEdge(T nodeFrom, T nodeTo){
-
+      //TODO
     }
 
 
