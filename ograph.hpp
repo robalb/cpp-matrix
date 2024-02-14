@@ -163,6 +163,7 @@ class oriented_graph {
       return count;
     }
 
+
     /**
      * @brief print a visual representation of the graph to stdout
      *
@@ -178,8 +179,8 @@ class oriented_graph {
 
     //TODO: remove after edge methods implementations
     void debug_setmatrix(const int *data){
-      for(int i=0; i<_size; i++){
-        for(int j=0; j<_size; j++){
+      for(size_type i=0; i<_size; i++){
+        for(size_type j=0; j<_size; j++){
           // _matrix[i][j] = data[i][j];
           _matrix[i][j] = *(data + (i*_size) + j);
         }
@@ -190,8 +191,13 @@ class oriented_graph {
       return (_index(node) != -1);
     }
 
-    bool existsEdge(const T nodeFrom, const T nodeTo) const{
-      return false; //TODO
+    bool existsEdge(const T &nodeFrom, const T &nodeTo) const{
+      int iFrom = _index(nodeFrom);
+      int iTo = _index(nodeTo);
+      if(iFrom == -1 || iTo == -1)
+        throw; //TODO
+
+      return (_matrix[iFrom][iTo] != 0);
     }
 
     void addNode(const T &node){
@@ -231,7 +237,7 @@ class oriented_graph {
       //TODO: should i std::swap and _then_ delete the new data?
     }
 
-    void removeNode(T node){
+    void removeNode(const T &node){
       if(!existsNode(node))
         throw;//TODO
 
@@ -244,7 +250,7 @@ class oriented_graph {
         new_matrix[i] = new int[new_size];
 
       //copy old data structures to new data structures
-      const int skip_index = _index(node);
+      const size_type skip_index = _index(node);
       for(size_type i=0, new_i=0; i<_size; i++){
         if(i == skip_index)
           continue;
@@ -268,12 +274,23 @@ class oriented_graph {
 
     }
 
-    void addEdge(T nodeFrom, T nodeTo){
-      //TODO
+    void addEdge(const T &nodeFrom, const T &nodeTo){
+      if(existsEdge(nodeFrom, nodeTo))
+        throw;//TODO
+
+      int weight = 1;
+      int iFrom = _index(nodeFrom);
+      int iTo = _index(nodeTo);
+      _matrix[iFrom][iTo] = weight;
     }
 
     void removeEdge(T nodeFrom, T nodeTo){
-      //TODO
+      if(!existsEdge(nodeFrom, nodeTo))
+        throw;//TODO
+
+      int iFrom = _index(nodeFrom);
+      int iTo = _index(nodeTo);
+      _matrix[iFrom][iTo] = 0;
     }
 
 
