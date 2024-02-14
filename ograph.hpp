@@ -5,6 +5,19 @@
 #include <iostream> // std::ostream
 #include <iterator> // std::forward_iterator_tag
 #include <cstddef>  // std::ptrdiff_t
+#include <exception>
+
+class invalidNodeException: public std::exception {
+  virtual const char* what() const throw(){
+    return "Invalid node";
+  }
+};
+
+class invalidEdgeException: public std::exception {
+  virtual const char* what() const throw(){
+    return "Invalid edge";
+  }
+};
 
 template <typename T, typename E>
 class oriented_graph {
@@ -47,6 +60,39 @@ class oriented_graph {
   private:
 
     /**
+     * @brief delete the dynamic memory of a matrix
+     *
+     * @param matrix the matrix to delete
+     * @param size the matrix size
+     */
+    void _delete_matrix(int **matrix, size_type size){
+      if(matrix != nullptr)
+        for(size_type i=0; i<size; i++)
+          delete[] matrix[i];
+      delete[] matrix;
+    }
+
+    /**
+     * @brief initialize all the rows of a matrix to nullptrs
+     *
+     * call this when initializing a matrix, between the initialization
+     * of the rows and the initialization of the columns.
+     * The purpose of this method is to allow _delete_matrix to work
+     * in the case of allocation errors on the columns
+     *
+     * Do not call this method on a fully initialized matrix 
+     * (This warning is the telltale sign that matrix should have been it's own class)
+     *
+     * @param matrix a matrix where only the rows have been allocated
+     * @param size
+     */
+    void _init_matrix(int **matrix, size_type size){
+      if(matrix != nullptr)
+        for(size_type i=0; i<size; i++)
+          matrix[i] = nullptr;
+    }
+
+    /**
      * @brief delete all the internal data of the matrix
      *
      * @post _size = 0
@@ -55,11 +101,7 @@ class oriented_graph {
      */
     void _clear(){
       delete[] _nodes;
-
-      for(size_type i=0; i<_size; i++)
-        delete[] _matrix[i];
-      delete[] _matrix;
-
+      _delete_matrix(_matrix, _size);
       _nodes = nullptr;
       _matrix = nullptr;
       _size = 0;
@@ -101,6 +143,7 @@ class oriented_graph {
      * @param nodes a list of nodes that are part of the graph
      * @param size the nodes list size
      *
+     * @throw std::bad_alloc 
      * @post _size = size
      * @post _nodes != nullptr
      * @post _matrix != nullptr
@@ -200,7 +243,7 @@ class oriented_graph {
     }
 
     /**
-     * @brief check if a node is part of the matrix
+     * @brief check if a node is part of the graph
      *
      * @returns true the node exists
      * @returns false the node does not exist
@@ -210,7 +253,11 @@ class oriented_graph {
     }
 
     /**
-     * @brief check if an edge is part of the matrix
+     * @brief check if an edge is part of the graph
+     *
+     * This implementation considers invalid nodes to be a valid query,
+     * therefore providing an invalid node will not raies any exception
+     * TODO: revise
      *  
      * @param nodeFrom the start node
      * @param nodeTo the end node
@@ -221,26 +268,44 @@ class oriented_graph {
       int iFrom = _index(nodeFrom);
       int iTo = _index(nodeTo);
       if(iFrom == -1 || iTo == -1)
-        return false; //TODO: decide if trowing is better
+        return false;
       return (_matrix[iFrom][iTo] != 0);
     }
 
     /**
-     * TODO: document
+     * @brief add a node to the graph
      *
-     * @throw 
+     * @param node node to add to the graph
+     * @throw invalidNodeException the provided node already exist
+     * @throw std::bad_alloc 
+     * @post _size = _size+1
+     * @post _nodes != _nodes
+     * @post _matrix != _matrix
      */
     void addNode(const T &node){
       if(existsNode(node))
-        throw;//TODO
+        throw new invalidNodeException;
 
       //create new, larger data structures
-      //TODO try
       size_type new_size = _size+1;
-      T* new_nodes = new T[new_size];
-      int** new_matrix = new int*[new_size];
-      for(size_type i=0; i<new_size; i++)
-        new_matrix[i] = new int[new_size];
+      T* new_nodes = nullptr;
+      int** new_matrix = nullptr;
+      try{
+        new_nodes = new T[new_size];
+        new_matrix = new int*[new_size];
+        // throw std::bad_alloc(); //TODO: decomment to test memory mangement during exceptions
+        _init_matrix(new_matrix, new_size);
+        for(size_type i=0; i<new_size; i++)
+          new_matrix[i] = new int[new_size];
+      }
+      catch(...){
+        #ifndef NDEBUG 
+        std::cout<<"exception in addNode()"<<std::endl;
+        #endif   
+        delete[] new_nodes;
+        _delete_matrix(new_matrix, new_size);
+        throw;
+      }
 
       //copy old data structures to new data structures
       for(size_type i=0; i<_size; i++)
@@ -267,17 +332,39 @@ class oriented_graph {
       //TODO: should i std::swap and _then_ delete the new data?
     }
 
+    /**
+     * @brief remove a node from the graph
+     *
+     * @param node node to remove from the graph
+     * @throw invalidNodeException the provided node does not exist
+     * @throw std::bad_alloc
+     * @post _size = _size-1
+     * @post _nodes != _nodes
+     * @post _matrix != _matrix
+     */
     void removeNode(const T &node){
       if(!existsNode(node))
-        throw;//TODO
+        throw invalidNodeException();
 
       //create new, smaller data structures
-      //TODO try
       const size_type new_size = _size-1;
-      T* new_nodes = new T[new_size];
-      int** new_matrix = new int*[new_size];
-      for(size_type i=0; i<new_size; i++)
-        new_matrix[i] = new int[new_size];
+      T* new_nodes = nullptr;
+      int** new_matrix = nullptr;
+      try{
+        new_nodes = new T[new_size];
+        new_matrix = new int*[new_size];
+        _init_matrix(new_matrix, new_size);
+        for(size_type i=0; i<new_size; i++)
+          new_matrix[i] = new int[new_size];
+      }
+      catch(...){
+        #ifndef NDEBUG 
+        std::cout<<"exception in removeNode()"<<std::endl;
+        #endif   
+        delete[] new_nodes;
+        _delete_matrix(new_matrix, new_size);
+        throw;
+      }
 
       //copy old data structures to new data structures
       const size_type skip_index = _index(node);
@@ -304,9 +391,17 @@ class oriented_graph {
 
     }
 
+    /**
+     * @brief add a direct edge between two nodes
+     *
+     * @param nodeFrom the start node
+     * @param nodeTo the destination node
+     * @throw invalidEdgeException the edge already exists
+     * @post _matrix[i][j] != _matrix[i][j]
+     */
     void addEdge(const T &nodeFrom, const T &nodeTo){
       if(existsEdge(nodeFrom, nodeTo))
-        throw;//TODO
+        throw invalidEdgeException();
 
       int weight = 1;
       int iFrom = _index(nodeFrom);
@@ -314,16 +409,22 @@ class oriented_graph {
       _matrix[iFrom][iTo] = weight;
     }
 
+    /**
+     * @brief remove an existing direct edge between two nodes
+     *
+     * @param nodeFrom the start node
+     * @param nodeTo the destination node
+     * @throw invalidEdgeException the edge does not exist
+     * @post _matrix[i][j] != _matrix[i][j]
+     */
     void removeEdge(T nodeFrom, T nodeTo){
       if(!existsEdge(nodeFrom, nodeTo))
-        throw;//TODO
+        throw invalidEdgeException();
 
       int iFrom = _index(nodeFrom);
       int iTo = _index(nodeTo);
       _matrix[iFrom][iTo] = 0;
     }
-
-
 
 };
 

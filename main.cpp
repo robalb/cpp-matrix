@@ -16,7 +16,7 @@ struct equal_int {
   }
 };
 
-int main(){
+void test_basic_behaviour(){
   //empty class
   oriented_graph<int, equal_int> og;
   assert(og.nodes() == 0);
@@ -117,4 +117,19 @@ int main(){
   //TODO: test all kinds of errors
   //TODO: repeat all tests, but for a custom class
 
+
+}
+
+int main(){
+  test_basic_behaviour();
+
+  oriented_graph<int, equal_int> og;
+  assert(og.nodes() == 0);
+  assert(og.edges() == 0);
+  try{
+    og.addNode(11);
+  }
+  catch(...){
+    std::cout << "exception in main()\n";
+  }
 }
