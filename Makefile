@@ -21,7 +21,7 @@ test: $(LINK_TARGET_TEST)
 debug: $(LINK_TARGET_TEST)
 	gdb ./$(LINK_TARGET_TEST)
 
-#valgrind must run on LINK_TARGET, the build without address sanitizer
+#valgrind must run on LINK_TARGET, the build without asan
 .PHONY: leaktest
 leaktest: $(LINK_TARGET)
 	valgrind ./$(LINK_TARGET)

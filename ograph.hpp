@@ -244,17 +244,34 @@ class oriented_graph {
         new_matrix[i] = new int[new_size];
 
       //copy old data structures to new data structures
+      //(suboptimal efficiency, lot of branching)
       const int skip_index = _index(node);
+      std::cout << "skip index: " << skip_index << "\n";
+
       for(size_type i=0, new_i=0; i<_size; i++){
+        if(i == skip_index)
+          continue;
         new_nodes[new_i] = _nodes[i];
-        if(i != skip_index) new_i++;
-      }
-      for(size_type i=0, new_i=0; i<_size; i++)
         for(size_type j=0, new_j=0; j<_size; j++){
+          if(j == skip_index)
+            continue;
           new_matrix[new_i][new_j] = _matrix[i][j];
-          if(i != skip_index) new_i++;
-          if(j != skip_index) new_j++;
+          new_j++;
         }
+        new_i++;
+      }
+
+
+      // for(size_type i=0, new_i=0; i<new_size; i++){
+      //   new_nodes[new_i] = _nodes[i];
+      //   if(i != skip_index) new_i++;
+      // }
+      // for(size_type i=0, new_i=0; i<new_size; i++)
+      //   for(size_type j=0, new_j=0; j<new_size; j++){
+      //     new_matrix[new_i][new_j] = _matrix[i][j];
+      //     if(i != skip_index) new_i++;
+      //     if(j != skip_index) new_j++;
+      //   }
 
       //delete old data structures
       _clear();

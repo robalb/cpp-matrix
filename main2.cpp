@@ -366,5 +366,5 @@ int main() {
   test_lista_di_stringhe();
 
   test_lista_di_point();
-
+  
 }

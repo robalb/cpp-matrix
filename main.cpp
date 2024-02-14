@@ -56,6 +56,4 @@ int main(){
   og.removeNode(11);
   og.print();
 
-
-
 }
