@@ -17,7 +17,11 @@ struct equal_int {
 };
 
 void test_basic_behaviour(){
-  //empty class
+  //-----------
+  //nodes
+  //-----------
+  
+  //empty graph
   oriented_graph<int, equal_int> og;
   assert(og.nodes() == 0);
   assert(og.edges() == 0);
@@ -34,31 +38,6 @@ void test_basic_behaviour(){
   assert(og.edges() == 0);
   assert(og.existsNode(10) == true);
   assert(og.existsNode(0) == false);
-  og.print();
-
-  //several nodes added post initialization
-  og.addNode(11);
-  og.print();
-  og.addNode(12);
-  og.print();
-  og.addNode(13);
-  og.print();
-  int m[4][4] = {
-    {1,2,3,4},
-    {1,2,3,4},
-    {1,2,3,4},
-    {1,2,3,4}
-  };
-  og.debug_setmatrix(&m[0][0]);
-  og.print();
-  og.addNode(14);
-  og.print();
-  //remove existing nodes
-  og.removeNode(11);
-  og.print();
-  og.removeNode(10);
-  og.print();
-  og.removeNode(14);
   og.print();
 
   //-----------
@@ -116,20 +95,30 @@ void test_basic_behaviour(){
   
   //TODO: test all kinds of errors
   //TODO: repeat all tests, but for a custom class
+}
+
+void test_exceptions(){
+  int nodes[] = {0,1,2,3,4,5};
+  oriented_graph<int, equal_int> og(nodes, sizeof(nodes)/sizeof(nodes[0]));
+
+  try{
+    og.addNode(1);
+  }
+  catch(invalidNodeException &e){
+    std::cout << "successfully raised \n";
+  }
+  catch(...){
+    std::cout << "other error \n";
+  }
 
 
 }
 
 int main(){
-  test_basic_behaviour();
+  // test_basic_behaviour();
+  test_exceptions();
 
-  oriented_graph<int, equal_int> og;
-  assert(og.nodes() == 0);
-  assert(og.edges() == 0);
-  try{
-    og.addNode(11);
-  }
-  catch(...){
-    std::cout << "exception in main()\n";
-  }
+  // oriented_graph<int, equal_int> og;
+  // assert(og.nodes() == 0);
+  // assert(og.edges() == 0);
 }

@@ -7,18 +7,39 @@
 #include <cstddef>  // std::ptrdiff_t
 #include <exception>
 
+/**
+ * @brief The node provided is not valid
+ *
+ * The node was not found, or duplicate
+ */
 class invalidNodeException: public std::exception {
-  virtual const char* what() const throw(){
+  virtual const char* what() {
     return "Invalid node";
   }
 };
 
+/**
+ * @brief The edge provided is not valid
+ *
+ * The edge was not found, or duplicate
+ */
 class invalidEdgeException: public std::exception {
-  virtual const char* what() const throw(){
+  virtual const char* what() {
     return "Invalid edge";
   }
 };
 
+/**
+ * @brief an oriented graph
+ *
+ * The class implements a generic ordered graph.
+ * Label for the graph are of generic type T.
+ * Each label is unique. There cannot be two nodes that are equal,
+ *   equality is checked using the provided E functor.
+ *
+ * @tparam T type for the node labels
+ * @tparam E functor used for node comparison
+ */
 template <typename T, typename E>
 class oriented_graph {
   //traits
@@ -80,8 +101,8 @@ class oriented_graph {
      * The purpose of this method is to allow _delete_matrix to work
      * in the case of allocation errors on the columns
      *
-     * Do not call this method on a fully initialized matrix 
-     * (This warning is the telltale sign that matrix should have been it's own class)
+     * Do not call this method on a fully initialized matrix
+     * (This warning is the telltale sign that matrix should have been implemented in a standalone class)
      *
      * @param matrix a matrix where only the rows have been allocated
      * @param size
@@ -93,7 +114,7 @@ class oriented_graph {
     }
 
     /**
-     * @brief delete all the internal data of the matrix
+     * @brief delete all the internal data of the graph
      *
      * @post _size = 0
      * @post _nodes = nullptr
@@ -283,8 +304,11 @@ class oriented_graph {
      * @post _matrix != _matrix
      */
     void addNode(const T &node){
-      if(existsNode(node))
+      if(existsNode(node)){
+        _clear();
+        std::cout << "clearclearclear\n";
         throw new invalidNodeException;
+      }
 
       //create new, larger data structures
       size_type new_size = _size+1;

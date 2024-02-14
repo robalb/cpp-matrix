@@ -24,7 +24,7 @@ debug: $(LINK_TARGET_TEST)
 #valgrind must run on LINK_TARGET, the build without asan
 .PHONY: leaktest
 leaktest: $(LINK_TARGET)
-	valgrind ./$(LINK_TARGET)
+	valgrind --leak-check=full ./$(LINK_TARGET) 
 
 
 $(LINK_TARGET_TEST): main.test.o 
