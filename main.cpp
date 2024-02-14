@@ -53,7 +53,17 @@ int main(){
   og.print();
   og.addNode(14);
   og.print();
+  //remove existing nodes
   og.removeNode(11);
   og.print();
+  og.removeNode(10);
+  og.print();
+  og.removeNode(14);
+  og.print();
+
+  //arches
+  
+  //TODO: test all kinds of errors
+  //TODO: repeat all tests, but for a custom class
 
 }
