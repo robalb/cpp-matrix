@@ -24,10 +24,9 @@ int main(){
   assert(og.existsNode(1) == false);
   assert(og.existsNode(0) == false);
   assert(og.existsNode(99) == false);
-  // TODO: test exceptions
-  // assert(og.existsEdge(0, 0) == false);
-  // assert(og.existsEdge(0, 1) == false);
-  // assert(og.existsEdge(99, 1) == false);
+  assert(og.existsEdge(0, 0) == false);
+  assert(og.existsEdge(0, 1) == false);
+  assert(og.existsEdge(99, 1) == false);
 
   //1 node added post initialization
   og.addNode(10);
@@ -99,6 +98,7 @@ int main(){
   assert(!og1.existsEdge(1,5));
   assert(!og1.existsEdge(0,5));
   assert(!og1.existsEdge(2,6));
+  assert(!og1.existsEdge(99,6));
 
   //node removal
   og1.removeNode(1);
@@ -111,6 +111,7 @@ int main(){
   assert(!og1.existsEdge(2,2));
   assert(!og1.existsEdge(0,5));
   assert(!og1.existsEdge(2,6));
+  assert(!og1.existsEdge(99,6));
 
   
   //TODO: test all kinds of errors

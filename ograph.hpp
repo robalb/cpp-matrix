@@ -65,10 +65,6 @@ class oriented_graph {
       _size = 0;
     }
 
-    void _init(){
-      
-    }
-
     /**
      * @brief find the index position of a node in the _nodes list
      *
@@ -80,10 +76,6 @@ class oriented_graph {
         if(_eql(_nodes[i], node))
           return i;
       return -1;
-    }
-
-    const T &_nodeAt(const int index){
-
     }
 
 
@@ -169,12 +161,32 @@ class oriented_graph {
      *
      */
     void print() const{
+      printNodes();
+      printEdges();
+    }
+
+    /**
+     * @brief print the graph edges to stdout
+     *
+     */
+    void printEdges() const{
       for(size_type i=0; i<_size; i++){
         for(size_type j=0; j<_size; j++){
           std::cout << _matrix[i][j] << " ";
         }
         std::cout << std::endl;
       }
+    }
+
+    /**
+     * @brief print the graph nodes to stdout
+     *
+     */
+    void printNodes() const{
+      for(size_type i=0; i<_size; i++){
+        std::cout << _nodes[i] << " ";
+      }
+        std::cout << std::endl;
     }
 
     //TODO: remove after edge methods implementations
@@ -187,19 +199,37 @@ class oriented_graph {
       }
     }
 
+    /**
+     * @brief check if a node is part of the matrix
+     *
+     * @returns true the node exists
+     * @returns false the node does not exist
+     */
     bool existsNode(const T &node) const{
       return (_index(node) != -1);
     }
 
+    /**
+     * @brief check if an edge is part of the matrix
+     *  
+     * @param nodeFrom the start node
+     * @param nodeTo the end node
+     * @returns true the edge exist
+     * @returns false the edge does not exist, or one of the two nodes does not exist
+     */
     bool existsEdge(const T &nodeFrom, const T &nodeTo) const{
       int iFrom = _index(nodeFrom);
       int iTo = _index(nodeTo);
       if(iFrom == -1 || iTo == -1)
-        throw; //TODO
-
+        return false; //TODO: decide if trowing is better
       return (_matrix[iFrom][iTo] != 0);
     }
 
+    /**
+     * TODO: document
+     *
+     * @throw 
+     */
     void addNode(const T &node){
       if(existsNode(node))
         throw;//TODO
@@ -292,7 +322,6 @@ class oriented_graph {
       int iTo = _index(nodeTo);
       _matrix[iFrom][iTo] = 0;
     }
-
 
 
 
