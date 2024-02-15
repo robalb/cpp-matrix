@@ -2,10 +2,10 @@
 #define OGRAPH_HPP
 
 #include <algorithm> // std::swap
-#include <iostream> // std::ostream
-#include <iterator> // std::forward_iterator_tag
-#include <cstddef>  // std::ptrdiff_t
-#include <exception>
+#include <iostream>  // std::ostream
+#include <iterator>  // std::forward_iterator_tag
+#include <cstddef>   // std::ptrdiff_t
+#include <exception> // std::exception
 
 /**
  * @brief The node provided is not valid

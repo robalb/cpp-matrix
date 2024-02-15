@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @brief usage test for the oriented_graph class
+ * @brief unit tests for the oriented_graph class
  */
 
 #include <iostream>
@@ -166,17 +166,143 @@ void test_swap(){
   M_ASSERT(og2.edges() == 1);
 }
 
-void test_equal(){
-  std::cout << "====== TEST_EQUAL ======" << std::endl;
+void test_copy_constructor(){
+  std::cout << "====== TEST_COPY_CONSTRUCTOR ======" << std::endl;
+
+  //-----------
+  //copy constructor
+  //-----------
+
+  char nodes[] = {'a', 'b', 'c', 'd'};
+  oriented_graph<char, equal_char> og1(nodes, sizeof(nodes)/sizeof(nodes[0]));
+  og1.addEdge('a', 'a');
+  og1.addEdge('a', 'd');
+  og1.addEdge('c', 'c');
+
+  M_ASSERT(og1.nodes() == 4);
+  M_ASSERT(og1.edges() == 3);
+  M_ASSERT(og1.existsEdge('a', 'a'));
+  M_ASSERT(og1.existsEdge('a', 'd'));
+  M_ASSERT(og1.existsEdge('c', 'c'));
+  M_ASSERT(!og1.existsEdge('d', 'a'));
+  M_ASSERT(!og1.existsEdge('e', 'e'));
+
+  oriented_graph<char, equal_char> og2 = og1;
+
+  //check that og1 is intact
+  M_ASSERT(og1.nodes() == 4);
+  M_ASSERT(og1.edges() == 3);
+  M_ASSERT(og1.existsEdge('a', 'a'));
+  M_ASSERT(og1.existsEdge('a', 'd'));
+  M_ASSERT(og1.existsEdge('c', 'c'));
+  M_ASSERT(!og1.existsEdge('d', 'a'));
+  M_ASSERT(!og1.existsEdge('e', 'e'));
+
+  //check that og2 is identical to og1
+  M_ASSERT(og2.nodes() == 4);
+  M_ASSERT(og2.edges() == 3);
+  M_ASSERT(og2.existsEdge('a', 'a'));
+  M_ASSERT(og2.existsEdge('a', 'd'));
+  M_ASSERT(og2.existsEdge('c', 'c'));
+  M_ASSERT(!og2.existsEdge('d', 'a'));
+  M_ASSERT(!og2.existsEdge('e', 'e'));
+
+  og1.removeNode('a');
+  og1.removeNode('d');
+
+  //check that og1 modified correctly
+  M_ASSERT(og1.nodes() == 2);
+  M_ASSERT(og1.edges() == 1);
+  M_ASSERT(og1.existsEdge('c', 'c'));
+  M_ASSERT(!og1.existsEdge('a', 'a'));
+  M_ASSERT(!og1.existsEdge('a', 'd'));
+  M_ASSERT(!og1.existsEdge('d', 'a'));
+  M_ASSERT(!og1.existsEdge('e', 'e'));
+
+  //check that og2 is intact
+  M_ASSERT(og2.nodes() == 4);
+  M_ASSERT(og2.edges() == 3);
+  M_ASSERT(og2.existsEdge('a', 'a'));
+  M_ASSERT(og2.existsEdge('a', 'd'));
+  M_ASSERT(og2.existsEdge('c', 'c'));
+  M_ASSERT(!og2.existsEdge('d', 'a'));
+  M_ASSERT(!og2.existsEdge('e', 'e'));
+
+}
+
+void test_copy_assignment(){
+  std::cout << "====== TEST_COPY_ASSIGNMENT ======" << std::endl;
+
+  //-----------
+  //copy assignment
+  //-----------
+
+  char nodes[] = {'x', 'y', 'z'};
+  oriented_graph<char, equal_char> og1(nodes, sizeof(nodes)/sizeof(nodes[0]));
+  og1.addEdge('x', 'x');
+  og1.addEdge('y', 'y');
+  og1.addEdge('x', 'y');
+  og1.addEdge('y', 'x');
+
+  M_ASSERT(og1.nodes() == 3);
+  M_ASSERT(og1.edges() == 4);
+  M_ASSERT(og1.existsEdge('x', 'x'));
+  M_ASSERT(og1.existsEdge('y', 'y'));
+  M_ASSERT(og1.existsEdge('x', 'y'));
+  M_ASSERT(og1.existsEdge('y', 'x'));
+
+  char nodes2[] = {'a', 'b', 'c', 'd'};
+  oriented_graph<char, equal_char> og2(nodes2, sizeof(nodes2)/sizeof(nodes2[0]));
+  og2.addEdge('a', 'a');
+  og2.addEdge('a', 'd');
+  og2.addEdge('c', 'c');
+
+  M_ASSERT(og2.nodes() == 4);
+  M_ASSERT(og2.edges() == 3);
+  M_ASSERT(og2.existsEdge('a', 'a'));
+  M_ASSERT(og2.existsEdge('a', 'd'));
+  M_ASSERT(og2.existsEdge('c', 'c'));
+  M_ASSERT(!og2.existsEdge('d', 'a'));
+  M_ASSERT(!og2.existsEdge('e', 'e'));
+
+  og2 = og1;
+
+  //check that information was copied correctly
+  M_ASSERT(og2.nodes() == 3);
+  M_ASSERT(og2.edges() == 4);
+  M_ASSERT(og2.existsEdge('x', 'x'));
+  M_ASSERT(og2.existsEdge('y', 'y'));
+  M_ASSERT(og2.existsEdge('x', 'y'));
+  M_ASSERT(og2.existsEdge('y', 'x'));
+
+  og2.removeNode('x');
+
+  //check that og2 changed succesfully
+  M_ASSERT(og2.nodes() == 2);
+  M_ASSERT(og2.edges() == 1);
+  M_ASSERT(og2.existsEdge('y', 'y'));
+  M_ASSERT(!og2.existsEdge('z', 'z'));
+  M_ASSERT(!og2.existsEdge('x', 'x'));
+  M_ASSERT(!og2.existsEdge('x', 'y'));
+  M_ASSERT(!og2.existsEdge('y', 'x'));
+
+  //check that changes in og2 didn't affect og1
+  M_ASSERT(og1.nodes() == 3);
+  M_ASSERT(og1.edges() == 4);
+  M_ASSERT(og1.existsEdge('x', 'x'));
+  M_ASSERT(og1.existsEdge('y', 'y'));
+  M_ASSERT(og1.existsEdge('x', 'y'));
+  M_ASSERT(og1.existsEdge('y', 'x'));
+
 
 }
 
 int main(){
-  //TODO: repeat all tests, but for a custom class
   test_basic_behaviour();
   test_exceptions();
   test_swap();
-  test_equal();
+  test_copy_constructor();
+  test_copy_assignment();
 
   // Print test summary
   testFramework::summary();
