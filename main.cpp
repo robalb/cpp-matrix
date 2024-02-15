@@ -17,6 +17,15 @@ struct equal_int {
   }
 };
 
+/**
+ * @brief functor for char equality
+ */
+struct equal_char {
+  bool operator()(char a, char b) const {
+    return a==b;
+  }
+};
+
 void test_basic_behaviour(){
   std::cout << "====== TEST_BASIC_BEHAVIOUR ======" << std::endl;
 
@@ -126,6 +135,39 @@ void test_exceptions(){
       og.addEdge(1,1),
       invalidEdgeException
       );
+}
+
+void test_swap(){
+  std::cout << "====== TEST_SWAP ======" << std::endl;
+
+  //-----------
+  //swap two classes
+  //-----------
+
+  int nodes[] = {0,1,2,3,4,5};
+  oriented_graph<int, equal_int> og1(nodes, sizeof(nodes)/sizeof(nodes[0]));
+  
+  oriented_graph<int, equal_int> og2;
+  og2.addNode(10);
+  og2.addNode(11);
+  og2.addEdge(10,11);
+
+  M_ASSERT(og1.nodes() == 6);
+  M_ASSERT(og1.edges() == 0);
+  M_ASSERT(og2.nodes() == 2);
+  M_ASSERT(og2.edges() == 1);
+
+  og1.swap(og2);
+  og2.swap(og1);
+  
+  M_ASSERT(og1.nodes() == 6);
+  M_ASSERT(og1.edges() == 0);
+  M_ASSERT(og2.nodes() == 2);
+  M_ASSERT(og2.edges() == 1);
+}
+
+void test_equal(){
+  std::cout << "====== TEST_EQUAL ======" << std::endl;
 
 }
 
@@ -133,7 +175,8 @@ int main(){
   //TODO: repeat all tests, but for a custom class
   test_basic_behaviour();
   test_exceptions();
-
+  test_swap();
+  test_equal();
 
   // Print test summary
   testFramework::summary();

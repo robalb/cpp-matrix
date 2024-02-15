@@ -141,9 +141,8 @@ class oriented_graph {
       return -1;
     }
 
-
+  //special members
   public:
-
 
     /**
      * @brief Default constructor
@@ -192,8 +191,63 @@ class oriented_graph {
       #endif   
     }
 
-    //TODO: swap method, assignment, copy
+    /**
+     * @brief swap the state of the current instance with the given instance
+     *
+     * @param other the instance to swap with
+     * @post _size != _size
+     * @post _nodes != _nodes
+     * @post _matrix != _matrix
+     */
+    void swap(oriented_graph &other) {
+      std::swap(_size,other._size);
+      std::swap(_nodes,other._nodes);
+      std::swap(_matrix,other._matrix);
+    }
 
+    /**
+     * @brief copy constructor
+     *
+     * @param other object to copy
+     * @throw std::bad_alloc 
+     * @post _size = size
+     * @post _nodes != nullptr
+     * @post _matrix != nullptr
+     */
+    oriented_graph(const oriented_graph &other): _size(0), _nodes(nullptr), _matrix(nullptr) {
+      #ifndef NDEBUG 
+      std::cout<<"oriented_graph(&oriented_graph)"<<std::endl;
+      #endif   
+      //copy without edges
+      for(size_type i=0; i<other._size; i++){
+        addNode(other._nodes[i]);
+      }
+      //copy edges
+      for(size_type i=0; i<other._size; i++)
+        for(size_type j=0; j<other._size; j++)
+          _matrix[i][j] = other._matrix[i][j];
+    }
+
+    /**
+     * @brief copy assignment
+     *
+     * @param other the element to copy
+     * @return reference to current graph, post-copy
+     * @throw std::bad_alloc 
+     * @post _size != _size
+     * @post _nodes != _nodes
+     * @post _matrix != _matrix
+     */
+    oriented_graph& operator=(const oriented_graph &other){
+      if (&other != this) {
+        oriented_graph tmp(other);
+        this->swap(tmp); 
+      }
+      return *this;
+    }
+
+  //public interface
+  public:
 
     /**
      * @brief graph nodes size getter
@@ -218,7 +272,6 @@ class oriented_graph {
 
       return count;
     }
-
 
     /**
      * @brief print a visual representation of the graph to stdout
@@ -268,7 +321,6 @@ class oriented_graph {
      *
      * This implementation considers invalid nodes to be a valid query,
      * therefore providing an invalid node will not raies any exception
-     * TODO: revise
      *  
      * @param nodeFrom the start node
      * @param nodeTo the end node
@@ -399,7 +451,6 @@ class oriented_graph {
       _size = new_size;
       _nodes = new_nodes;
       _matrix = new_matrix;
-
     }
 
     /**
@@ -439,7 +490,6 @@ class oriented_graph {
       int iTo = _index(nodeTo);
       _matrix[iFrom][iTo] = 0;
     }
-
 };
 
 
