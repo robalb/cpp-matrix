@@ -304,11 +304,8 @@ class oriented_graph {
      * @post _matrix != _matrix
      */
     void addNode(const T &node){
-      if(existsNode(node)){
-        _clear();
-        std::cout << "clearclearclear\n";
-        throw new invalidNodeException;
-      }
+      if(existsNode(node))
+        throw invalidNodeException();
 
       //create new, larger data structures
       size_type new_size = _size+1;

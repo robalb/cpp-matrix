@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cassert>
 #include "ograph.hpp"
+#include "testframework.hpp"
 
 /**
  * @brief functor for integer equality
@@ -92,33 +93,55 @@ void test_basic_behaviour(){
   assert(!og1.existsEdge(2,6));
   assert(!og1.existsEdge(99,6));
 
-  
-  //TODO: test all kinds of errors
-  //TODO: repeat all tests, but for a custom class
 }
 
 void test_exceptions(){
   int nodes[] = {0,1,2,3,4,5};
   oriented_graph<int, equal_int> og(nodes, sizeof(nodes)/sizeof(nodes[0]));
 
-  try{
-    og.addNode(1);
-  }
-  catch(invalidNodeException &e){
-    std::cout << "successfully raised \n";
-  }
-  catch(...){
-    std::cout << "other error \n";
-  }
-
+  M_ASSERT_THROW(
+      og.addNode(1),
+      invalidNodeException
+      );
+  M_ASSERT_THROW(
+      og.addNode(200),
+      invalidNodeException
+      );
+  M_ASSERT_THROW(
+      og.addNode(300),
+      invalidNodeException
+      );
 
 }
 
 int main(){
+  
+  //TODO: test all kinds of errors
+  //TODO: repeat all tests, but for a custom class
+  //
   // test_basic_behaviour();
-  test_exceptions();
+  // test_exceptions();
 
+
+  // testFramework_summary();
   // oriented_graph<int, equal_int> og;
   // assert(og.nodes() == 0);
   // assert(og.edges() == 0);
+  //
+  //
+
+
+
+    // Test boolean assertions
+    M_ASSERT(2 + 2 == 4);
+    M_ASSERT(5 * 3 == 14);
+
+    testFramework::caught = testFramework::caughtType::none;
+
+    // Test throw assertions
+    M_ASSERT_THROW(throw std::invalid_argument("Invalid argument"), std::invalid_argument);
+    M_ASSERT_THROW(throw std::logic_error("Logic error"), std::invalid_argument);
+
+    // Print test summary
+    testFramework::summary();
 }
