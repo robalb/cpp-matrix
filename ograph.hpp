@@ -253,16 +253,6 @@ class oriented_graph {
         std::cout << std::endl;
     }
 
-    //TODO: remove after edge methods implementations
-    void debug_setmatrix(const int *data){
-      for(size_type i=0; i<_size; i++){
-        for(size_type j=0; j<_size; j++){
-          // _matrix[i][j] = data[i][j];
-          _matrix[i][j] = *(data + (i*_size) + j);
-        }
-      }
-    }
-
     /**
      * @brief check if a node is part of the graph
      *
@@ -314,8 +304,8 @@ class oriented_graph {
       try{
         new_nodes = new T[new_size];
         new_matrix = new int*[new_size];
-        // throw std::bad_alloc(); //TODO: decomment to test memory mangement during exceptions
         _init_matrix(new_matrix, new_size);
+        // throw std::bad_alloc(); //TODO: decomment to test memory mangement during exceptions
         for(size_type i=0; i<new_size; i++)
           new_matrix[i] = new int[new_size];
       }
@@ -418,9 +408,12 @@ class oriented_graph {
      * @param nodeFrom the start node
      * @param nodeTo the destination node
      * @throw invalidEdgeException the edge already exists
+     * @throw invalidNodeException the provided nodes do not exist
      * @post _matrix[i][j] != _matrix[i][j]
      */
     void addEdge(const T &nodeFrom, const T &nodeTo){
+      if(!existsNode(nodeFrom) || !existsNode(nodeTo))
+        throw invalidNodeException();
       if(existsEdge(nodeFrom, nodeTo))
         throw invalidEdgeException();
 

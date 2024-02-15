@@ -40,6 +40,7 @@
 
 
 class testFramework {
+
 public:
     enum class caughtType {none, wrong, correct};
     static int success;
@@ -88,7 +89,9 @@ public:
         std::cout << "tests failed: " << (total - success) << std::endl;
         std::cout << "---------------------------" << std::endl;
     }
+
 };
+
 
 int testFramework::success = 0;
 int testFramework::total = 0;
