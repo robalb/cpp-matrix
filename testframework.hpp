@@ -1,14 +1,16 @@
 /**
- * @brief single-file test framework
+ * @file testframework.hpp
+ * @brief single-file unit test framework
  * 
  * Example usage:
  *  <code>
  *  int main() {
  *      M_ASSERT(2 + 2 == 4);
  *      M_ASSERT(5 * 3 == 14);
- *
- *      M_ASSERT_THROW(throw std::invalid_argument("Invalid argument"), std::invalid_argument);
- *      M_ASSERT_THROW(throw std::logic_error("Logic error"), std::invalid_argument);
+ *      M_ASSERT_THROW(
+ *          throw std::invalid_argument("Invalid argument"),
+ *          std::invalid_argument
+ *      );
  *
  *      testFramework::summary();
  *  }

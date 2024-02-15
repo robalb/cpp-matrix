@@ -1,3 +1,9 @@
+/**
+ * @file ograph.hpp
+ * @brief header file implementing the oriented graph class
+ *
+ */
+
 #ifndef OGRAPH_HPP
 #define OGRAPH_HPP
 
@@ -274,36 +280,16 @@ class oriented_graph {
     }
 
     /**
-     * @brief print a visual representation of the graph to stdout
-     *
-     */
-    void print() const{
-      printNodes();
-      printEdges();
-    }
-
-    /**
      * @brief print the graph edges to stdout
      *
      */
-    void printEdges() const{
+    void print() const{
       for(size_type i=0; i<_size; i++){
         for(size_type j=0; j<_size; j++){
           std::cout << _matrix[i][j] << " ";
         }
         std::cout << std::endl;
       }
-    }
-
-    /**
-     * @brief print the graph nodes to stdout
-     *
-     */
-    void printNodes() const{
-      for(size_type i=0; i<_size; i++){
-        std::cout << _nodes[i] << " ";
-      }
-        std::cout << std::endl;
     }
 
     /**
@@ -357,7 +343,7 @@ class oriented_graph {
         new_nodes = new T[new_size];
         new_matrix = new int*[new_size];
         _init_matrix(new_matrix, new_size);
-        // throw std::bad_alloc(); //TODO: decomment to test memory mangement during exceptions
+        // throw std::bad_alloc(); //TODO:remove. decomment to simulate malloc issue
         for(size_type i=0; i<new_size; i++)
           new_matrix[i] = new int[new_size];
       }
@@ -490,6 +476,137 @@ class oriented_graph {
       int iTo = _index(nodeTo);
       _matrix[iFrom][iTo] = 0;
     }
+
+  //iterator implementation
+  public:
+
+    /**
+     * @brief const forward iterator on the graph nodes
+     *
+     */
+    class const_iterator {
+      //traits:
+    public:
+      typedef std::forward_iterator_tag iterator_category;
+      typedef T                         value_type;
+      typedef ptrdiff_t                 difference_type;
+      typedef const T*                  pointer;
+      typedef const T&                  reference;
+
+    
+      /**
+       * @brief base constructor
+       */
+      const_iterator() : n(nullptr) {}
+      
+      /**
+       * @brief copy constructor
+       */
+      const_iterator(const const_iterator &other) : n(other.n) {}
+
+      /**
+       * @brief copy assignment
+       */
+      const_iterator& operator=(const const_iterator &other) {
+        n = other.n;
+        return *this;
+      }
+
+      /**
+       * @brief iterator destructor
+       */
+      ~const_iterator() {}
+
+      /**
+       * @return a reference to the data pointed by the iterator
+       */
+      reference operator*() const {
+        return *n;
+      }
+
+      /**
+       * @return the address of the data pointed by the iterator
+       */
+      pointer operator->() const {
+        return n;
+      }
+      
+      /**
+       * @brief post increment operator
+       */
+      const_iterator operator++(int) {
+        const_iterator tmp(*this);
+        n++;
+        return tmp;
+      }
+
+      /**
+       * @brief pre increment operator
+       */
+      const_iterator& operator++() {
+        n++;
+        return *this;
+      }
+
+      /**
+       * @brief equality operator
+       */
+      bool operator==(const const_iterator &other) const {
+        return (n == other.n);
+      }
+      
+      /**
+       * @brief inequality operator
+       */
+      bool operator!=(const const_iterator &other) const {
+        return (n != other.n);
+      }
+
+    private:
+      const T *n;
+
+      friend class oriented_graph; 
+
+      /**
+       * @brief iterator constructor
+       *
+       * this constructor can only be called by oriented_graph, that has
+       * been set as friend
+       *
+       * @param nn pointer to the graph nodes internal data structure
+       */
+      const_iterator(const T *nn) : n(nn) { }
+      
+    }; //class const_iterator
+    
+
+
+    /**
+     * @brief return an iterator pointing to the first node in the graph
+     *
+     * The iterator yelds all nodes inserted in the graph, there is no rule
+     * for the order in which they are returned.
+     * Consider this an iterator over a list of the graph nodes, in a shuffled order
+     * @return const_iterator iterator begin
+     */
+    const_iterator begin() const {
+      return const_iterator(_nodes);
+    }
+    
+    /**
+     * @brief return an iterator pointing to the end boundary of the graph
+     *
+     * The iterator yelds all nodes inserted in the graph, there is no rule
+     * for the order in which they are returned.
+     * The end iterator can only be used as a marker for the end of an iteration.
+     * Attempts to dereference it will cause undefined behaviour
+     *
+     * @return const_iterator iterator end
+     */
+    const_iterator end() const {
+      return const_iterator(_nodes+_size);
+    }
+
 };
 
 

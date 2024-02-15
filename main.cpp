@@ -294,6 +294,53 @@ void test_copy_assignment(){
   M_ASSERT(og1.existsEdge('x', 'y'));
   M_ASSERT(og1.existsEdge('y', 'x'));
 
+}
+
+void test_iterator(){
+  std::cout << "====== TEST_ITERATOR ======" << std::endl;
+
+  char nodes[] = {'a', 'b', 'c'};
+  oriented_graph<char, equal_char> og(nodes, sizeof(nodes)/sizeof(nodes[0]));
+  oriented_graph<char, equal_char>::const_iterator a = og.begin();
+
+  //test access
+  M_ASSERT(*a == 'a');
+
+  //test post increment
+  M_ASSERT(*(a++) == 'a');
+  M_ASSERT(*a == 'b');
+
+  //test pre increment
+  M_ASSERT(*(++a) == 'c');
+  M_ASSERT(*a == 'c');
+
+  //test equality, and access boundaries
+  a++;
+  M_ASSERT(a == og.end());
+
+  //test assignment operator
+  a = og.begin();
+  M_ASSERT(*a == 'a');
+
+  //empty iterator
+  oriented_graph<int, equal_int> og1;
+  M_ASSERT(og1.begin() == og1.end());
+
+  og1.addNode(1);
+  M_ASSERT(++og1.begin() == og1.end());
+
+  //test basic usage
+  og1.addNode(2);
+  int sum = 0;
+  for(oriented_graph<int, equal_int>::const_iterator i = og1.begin(); i != og1.end(); i++){
+    sum += *i;
+  }
+  M_ASSERT(sum == 3);
+}
+
+
+void test_custom_type(){
+  std::cout << "====== TEST_CUSTOM_TYPE ======" << std::endl;
 
 }
 
@@ -303,6 +350,8 @@ int main(){
   test_swap();
   test_copy_constructor();
   test_copy_assignment();
+  test_iterator();
+  test_custom_type();
 
   // Print test summary
   testFramework::summary();
