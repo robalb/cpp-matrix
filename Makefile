@@ -30,7 +30,7 @@ leaktest: $(LINK_TARGET)
 $(LINK_TARGET_TEST): main.test.o 
 	$(CXX_TEST) $(CXXFLAGS_TEST) -o $@ $^
 
-main.test.o: main.cpp olist.hpp
+main.test.o: main.cpp ograph.hpp
 	$(CXX_TEST) $(CXXFLAGS_TEST) -I$(CXXINCLUDES_TEST) -o $@ -c main.cpp
 
 #----------------
@@ -38,7 +38,7 @@ main.test.o: main.cpp olist.hpp
 $(LINK_TARGET): main.o 
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-main.o: main.cpp olist.hpp
+main.o: main.cpp ograph.hpp
 	$(CXX) $(CXXFLAGS) -I$(CXXINCLUDES) -o $@ -c main.cpp
 
 #----------------

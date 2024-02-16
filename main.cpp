@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cassert>
 #include "ograph.hpp"
+#include "animal.hpp"
 #include "testframework.hpp"
 
 /**
@@ -25,6 +26,159 @@ struct equal_char {
     return a==b;
   }
 };
+
+/**
+ * @brief functor for custom class animal equality
+ */
+struct equal_animal {
+  bool operator()(const animal &a, const animal &b) const {
+    bool bothQuack = (a.doesQuack() == b.doesQuack());
+    bool sameLegs = (a.getLegs() == b.getLegs());
+    return bothQuack && sameLegs;
+  }
+};
+
+
+void test_custom_class(){
+  std::cout << "====== TEST_CUSTOM_CLASS ======" << std::endl;
+
+  //-----------
+  //empty graph 1
+  //-----------
+
+  oriented_graph<animal, equal_animal> og;
+
+  animal duck1 = animal(true, 2);
+  animal duck2 = animal(true, 2);
+  animal dog1 = animal(false, 2);
+
+  M_ASSERT(og.nodes() == 0);
+  M_ASSERT(og.edges() == 0);
+  M_ASSERT(!og.existsNode(duck1));
+
+  std::cout << "*** add node ***" << std::endl;
+  og.addNode(duck1);
+  std::cout << "*** end add node ***" << std::endl;
+
+  M_ASSERT(og.nodes() == 1);
+  M_ASSERT(og.edges() == 0);
+  M_ASSERT_THROW(
+      og.addNode(duck2),
+      invalidNodeException
+      )
+  M_ASSERT(og.existsNode(duck1));
+  //test duck typing
+  M_ASSERT(og.existsNode(duck2));
+
+  //-----------
+  //non-empty graph 2
+  //-----------
+  animal list[] = {dog1};
+  oriented_graph<animal, equal_animal> og2(list, 1);
+
+  M_ASSERT(og2.existsNode(dog1));
+  M_ASSERT(!og2.existsNode(duck1));
+  M_ASSERT(og2.nodes() == 1);
+  M_ASSERT(og2.edges() == 0);
+
+  //add edge
+  og2.addEdge(dog1, dog1);
+  M_ASSERT(og2.nodes() == 1);
+  M_ASSERT(og2.edges() == 1);
+  M_ASSERT(og2.existsEdge(dog1, dog1));
+  M_ASSERT_THROW(
+      og2.addEdge(dog1, dog1),
+      invalidEdgeException
+      )
+
+  std::cout << "*** copy assignment ***" << std::endl;
+  og2 = og;
+  std::cout << "*** copy assignment end ***" << std::endl;
+
+  M_ASSERT(og.nodes() == 1);
+  M_ASSERT(og.edges() == 0);
+  M_ASSERT(og.existsNode(duck1));
+
+  //remove node
+  og2.removeNode(duck1);
+  M_ASSERT(og2.nodes() == 0);
+  M_ASSERT(og2.edges() == 0);
+  M_ASSERT(!og2.existsNode(duck1));
+}
+
+void test_custom_class_iterator(){
+  std::cout << "====== TEST_CUSTOM_CLASS_ITERATOR ======" << std::endl;
+
+  oriented_graph<animal, equal_animal> og;
+  animal duck1 = animal(true, 2);
+  animal duck2 = animal(true, 2);
+  animal dog1 = animal(false, 2);
+  og.addNode(duck1);
+  og.addNode(dog1);
+
+  //iterator
+  oriented_graph<animal, equal_animal>::const_iterator i = og.begin();
+
+  //test access
+  M_ASSERT(i->doesQuack() == duck1.doesQuack());
+
+  //empty iterator
+  oriented_graph<animal, equal_animal> og1;
+  M_ASSERT(og1.begin() == og1.end());
+
+  og1.addNode(duck1);
+  M_ASSERT(++og1.begin() == og1.end());
+
+  //test basic usage
+  og1.addNode(dog1);
+  int sum = 0;
+  for(oriented_graph<animal, equal_animal>::const_iterator i = og1.begin(); i != og1.end(); i++){
+    sum += i->getLegs();
+  }
+  M_ASSERT(sum == 4);
+
+}
+
+void pass_by_value(oriented_graph<int, equal_int> d) {
+  d.addNode(10);
+  std::cout << "*** leaving pass_by_value ***" << std::endl;
+}
+
+void pass_by_reference(oriented_graph<int, equal_int> &d) {
+  d.addNode(11);
+  std::cout << "*** leaving pass_by_reference ***" << std::endl;
+}
+
+void pass_by_pointer(oriented_graph<int, equal_int> *d) {
+  d->addNode(12);
+  std::cout << "*** leaving pass_by_pointer ***" << std::endl;
+}
+
+void test_class_behaviour(){
+  std::cout << "====== TEST_CLASS_BEHAVIOUR ======" << std::endl;
+  oriented_graph<int, equal_int> og;
+
+  //we expect a call to the copy constructor here
+  M_ASSERT(og.nodes() == 0);
+  std::cout << "*** calling pass_by_value ***" << std::endl;
+  pass_by_value(og);
+  M_ASSERT(og.nodes() == 0);
+
+  std::cout << "*** calling pass_by_reference ***" << std::endl;
+  pass_by_reference(og);
+  M_ASSERT(og.nodes() == 1);
+
+  std::cout << "*** calling pass_by_pointer ***" << std::endl;
+  pass_by_pointer(&og);
+  M_ASSERT(og.nodes() == 2);
+
+  //we expect 5 calls to the default constructor here
+  std::cout << "*** default constructor ***" << std::endl;
+  oriented_graph<int, equal_int> og1[5];
+
+  //we expect 6 calls to the destructor here
+  std::cout << "*** end of function ***" << std::endl;
+}
 
 void test_basic_behaviour(){
   std::cout << "====== TEST_BASIC_BEHAVIOUR ======" << std::endl;
@@ -339,19 +493,16 @@ void test_iterator(){
 }
 
 
-void test_custom_type(){
-  std::cout << "====== TEST_CUSTOM_TYPE ======" << std::endl;
-
-}
-
 int main(){
+  test_custom_class();
+  test_custom_class_iterator();
+  test_class_behaviour();
   test_basic_behaviour();
   test_exceptions();
   test_swap();
   test_copy_constructor();
   test_copy_assignment();
   test_iterator();
-  test_custom_type();
 
   // Print test summary
   testFramework::summary();
