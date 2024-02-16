@@ -52,23 +52,23 @@ void test_custom_class(){
   animal duck2 = animal(true, 2);
   animal dog1 = animal(false, 2);
 
-  M_ASSERT(og.nodes() == 0);
-  M_ASSERT(og.edges() == 0);
-  M_ASSERT(!og.existsNode(duck1));
+  assert(og.nodes() == 0);
+  assert(og.edges() == 0);
+  assert(!og.existsNode(duck1));
 
   std::cout << "*** add node ***" << std::endl;
   og.addNode(duck1);
   std::cout << "*** end add node ***" << std::endl;
 
-  M_ASSERT(og.nodes() == 1);
-  M_ASSERT(og.edges() == 0);
+  assert(og.nodes() == 1);
+  assert(og.edges() == 0);
   M_ASSERT_THROW(
       og.addNode(duck2),
       invalidNodeException
       )
-  M_ASSERT(og.existsNode(duck1));
+  assert(og.existsNode(duck1));
   //test duck typing
-  M_ASSERT(og.existsNode(duck2));
+  assert(og.existsNode(duck2));
 
   //-----------
   //non-empty graph 2
@@ -76,16 +76,16 @@ void test_custom_class(){
   animal list[] = {dog1};
   oriented_graph<animal, equal_animal> og2(list, 1);
 
-  M_ASSERT(og2.existsNode(dog1));
-  M_ASSERT(!og2.existsNode(duck1));
-  M_ASSERT(og2.nodes() == 1);
-  M_ASSERT(og2.edges() == 0);
+  assert(og2.existsNode(dog1));
+  assert(!og2.existsNode(duck1));
+  assert(og2.nodes() == 1);
+  assert(og2.edges() == 0);
 
   //add edge
   og2.addEdge(dog1, dog1);
-  M_ASSERT(og2.nodes() == 1);
-  M_ASSERT(og2.edges() == 1);
-  M_ASSERT(og2.existsEdge(dog1, dog1));
+  assert(og2.nodes() == 1);
+  assert(og2.edges() == 1);
+  assert(og2.existsEdge(dog1, dog1));
   M_ASSERT_THROW(
       og2.addEdge(dog1, dog1),
       invalidEdgeException
@@ -95,15 +95,15 @@ void test_custom_class(){
   og2 = og;
   std::cout << "*** copy assignment end ***" << std::endl;
 
-  M_ASSERT(og.nodes() == 1);
-  M_ASSERT(og.edges() == 0);
-  M_ASSERT(og.existsNode(duck1));
+  assert(og.nodes() == 1);
+  assert(og.edges() == 0);
+  assert(og.existsNode(duck1));
 
   //remove node
   og2.removeNode(duck1);
-  M_ASSERT(og2.nodes() == 0);
-  M_ASSERT(og2.edges() == 0);
-  M_ASSERT(!og2.existsNode(duck1));
+  assert(og2.nodes() == 0);
+  assert(og2.edges() == 0);
+  assert(!og2.existsNode(duck1));
 }
 
 void test_custom_class_iterator(){
@@ -120,14 +120,14 @@ void test_custom_class_iterator(){
   oriented_graph<animal, equal_animal>::const_iterator i = og.begin();
 
   //test access
-  M_ASSERT(i->doesQuack() == duck1.doesQuack());
+  assert(i->doesQuack() == duck1.doesQuack());
 
   //empty iterator
   oriented_graph<animal, equal_animal> og1;
-  M_ASSERT(og1.begin() == og1.end());
+  assert(og1.begin() == og1.end());
 
   og1.addNode(duck1);
-  M_ASSERT(++og1.begin() == og1.end());
+  assert(++og1.begin() == og1.end());
 
   //test basic usage
   og1.addNode(dog1);
@@ -135,7 +135,7 @@ void test_custom_class_iterator(){
   for(oriented_graph<animal, equal_animal>::const_iterator i = og1.begin(); i != og1.end(); i++){
     sum += i->getLegs();
   }
-  M_ASSERT(sum == 4);
+  assert(sum == 4);
 
 }
 
@@ -159,18 +159,18 @@ void test_class_behaviour(){
   oriented_graph<int, equal_int> og;
 
   //we expect a call to the copy constructor here
-  M_ASSERT(og.nodes() == 0);
+  assert(og.nodes() == 0);
   std::cout << "*** calling pass_by_value ***" << std::endl;
   pass_by_value(og);
-  M_ASSERT(og.nodes() == 0);
+  assert(og.nodes() == 0);
 
   std::cout << "*** calling pass_by_reference ***" << std::endl;
   pass_by_reference(og);
-  M_ASSERT(og.nodes() == 1);
+  assert(og.nodes() == 1);
 
   std::cout << "*** calling pass_by_pointer ***" << std::endl;
   pass_by_pointer(&og);
-  M_ASSERT(og.nodes() == 2);
+  assert(og.nodes() == 2);
 
   //we expect 5 calls to the default constructor here
   std::cout << "*** default constructor ***" << std::endl;
@@ -189,21 +189,21 @@ void test_basic_behaviour(){
   
   //empty graph
   oriented_graph<int, equal_int> og;
-  M_ASSERT(og.nodes() == 0);
-  M_ASSERT(og.edges() == 0);
-  M_ASSERT(og.existsNode(1) == false);
-  M_ASSERT(og.existsNode(0) == false);
-  M_ASSERT(og.existsNode(99) == false);
-  M_ASSERT(og.existsEdge(0, 0) == false);
-  M_ASSERT(og.existsEdge(0, 1) == false);
-  M_ASSERT(og.existsEdge(99, 1) == false);
+  assert(og.nodes() == 0);
+  assert(og.edges() == 0);
+  assert(og.existsNode(1) == false);
+  assert(og.existsNode(0) == false);
+  assert(og.existsNode(99) == false);
+  assert(og.existsEdge(0, 0) == false);
+  assert(og.existsEdge(0, 1) == false);
+  assert(og.existsEdge(99, 1) == false);
 
   //1 node added post initialization
   og.addNode(10);
-  M_ASSERT(og.nodes() == 1);
-  M_ASSERT(og.edges() == 0);
-  M_ASSERT(og.existsNode(10) == true);
-  M_ASSERT(og.existsNode(0) == false);
+  assert(og.nodes() == 1);
+  assert(og.edges() == 0);
+  assert(og.existsNode(10) == true);
+  assert(og.existsNode(0) == false);
   og.print();
 
   //-----------
@@ -214,49 +214,49 @@ void test_basic_behaviour(){
   int nodes[] = {0,1,2,3,4,5};
   oriented_graph<int, equal_int> og1(nodes, sizeof(nodes)/sizeof(nodes[0]));
   og1.print();
-  M_ASSERT(og1.nodes() == 6);
-  M_ASSERT(og1.edges() == 0);
+  assert(og1.nodes() == 6);
+  assert(og1.edges() == 0);
 
   //add edges
   og1.addEdge(0,2);
   og1.addEdge(3,3);
-  M_ASSERT(og1.existsEdge(0,2));
-  M_ASSERT(!og1.existsEdge(2,0));
-  M_ASSERT(og1.existsEdge(3,3));
-  M_ASSERT(og1.edges() == 2);
+  assert(og1.existsEdge(0,2));
+  assert(!og1.existsEdge(2,0));
+  assert(og1.existsEdge(3,3));
+  assert(og1.edges() == 2);
 
   //add node, then edges in that node
   og1.addNode(6);
   og1.addEdge(1,6);
   og1.addEdge(6,1);
   og1.print();
-  M_ASSERT(og1.nodes() == 7);
-  M_ASSERT(og1.edges() == 4);
-  M_ASSERT(og1.existsEdge(0,2));
-  M_ASSERT(og1.existsEdge(3,3));
-  M_ASSERT(og1.existsEdge(1,6));
-  M_ASSERT(og1.existsEdge(6,1));
+  assert(og1.nodes() == 7);
+  assert(og1.edges() == 4);
+  assert(og1.existsEdge(0,2));
+  assert(og1.existsEdge(3,3));
+  assert(og1.existsEdge(1,6));
+  assert(og1.existsEdge(6,1));
 
-  M_ASSERT(!og1.existsEdge(2,0));
-  M_ASSERT(!og1.existsEdge(2,2));
-  M_ASSERT(!og1.existsEdge(1,1));
-  M_ASSERT(!og1.existsEdge(1,5));
-  M_ASSERT(!og1.existsEdge(0,5));
-  M_ASSERT(!og1.existsEdge(2,6));
-  M_ASSERT(!og1.existsEdge(99,6));
+  assert(!og1.existsEdge(2,0));
+  assert(!og1.existsEdge(2,2));
+  assert(!og1.existsEdge(1,1));
+  assert(!og1.existsEdge(1,5));
+  assert(!og1.existsEdge(0,5));
+  assert(!og1.existsEdge(2,6));
+  assert(!og1.existsEdge(99,6));
 
   //node removal
   og1.removeNode(1);
   og1.print();
-  M_ASSERT(og1.edges() == 2);
-  M_ASSERT(og1.existsEdge(0,2));
-  M_ASSERT(og1.existsEdge(3,3));
+  assert(og1.edges() == 2);
+  assert(og1.existsEdge(0,2));
+  assert(og1.existsEdge(3,3));
 
-  M_ASSERT(!og1.existsEdge(2,0));
-  M_ASSERT(!og1.existsEdge(2,2));
-  M_ASSERT(!og1.existsEdge(0,5));
-  M_ASSERT(!og1.existsEdge(2,6));
-  M_ASSERT(!og1.existsEdge(99,6));
+  assert(!og1.existsEdge(2,0));
+  assert(!og1.existsEdge(2,2));
+  assert(!og1.existsEdge(0,5));
+  assert(!og1.existsEdge(2,6));
+  assert(!og1.existsEdge(99,6));
 
 }
 
@@ -306,18 +306,18 @@ void test_swap(){
   og2.addNode(11);
   og2.addEdge(10,11);
 
-  M_ASSERT(og1.nodes() == 6);
-  M_ASSERT(og1.edges() == 0);
-  M_ASSERT(og2.nodes() == 2);
-  M_ASSERT(og2.edges() == 1);
+  assert(og1.nodes() == 6);
+  assert(og1.edges() == 0);
+  assert(og2.nodes() == 2);
+  assert(og2.edges() == 1);
 
   og1.swap(og2);
   og2.swap(og1);
   
-  M_ASSERT(og1.nodes() == 6);
-  M_ASSERT(og1.edges() == 0);
-  M_ASSERT(og2.nodes() == 2);
-  M_ASSERT(og2.edges() == 1);
+  assert(og1.nodes() == 6);
+  assert(og1.edges() == 0);
+  assert(og2.nodes() == 2);
+  assert(og2.edges() == 1);
 }
 
 void test_copy_constructor(){
@@ -333,54 +333,54 @@ void test_copy_constructor(){
   og1.addEdge('a', 'd');
   og1.addEdge('c', 'c');
 
-  M_ASSERT(og1.nodes() == 4);
-  M_ASSERT(og1.edges() == 3);
-  M_ASSERT(og1.existsEdge('a', 'a'));
-  M_ASSERT(og1.existsEdge('a', 'd'));
-  M_ASSERT(og1.existsEdge('c', 'c'));
-  M_ASSERT(!og1.existsEdge('d', 'a'));
-  M_ASSERT(!og1.existsEdge('e', 'e'));
+  assert(og1.nodes() == 4);
+  assert(og1.edges() == 3);
+  assert(og1.existsEdge('a', 'a'));
+  assert(og1.existsEdge('a', 'd'));
+  assert(og1.existsEdge('c', 'c'));
+  assert(!og1.existsEdge('d', 'a'));
+  assert(!og1.existsEdge('e', 'e'));
 
   oriented_graph<char, equal_char> og2 = og1;
 
   //check that og1 is intact
-  M_ASSERT(og1.nodes() == 4);
-  M_ASSERT(og1.edges() == 3);
-  M_ASSERT(og1.existsEdge('a', 'a'));
-  M_ASSERT(og1.existsEdge('a', 'd'));
-  M_ASSERT(og1.existsEdge('c', 'c'));
-  M_ASSERT(!og1.existsEdge('d', 'a'));
-  M_ASSERT(!og1.existsEdge('e', 'e'));
+  assert(og1.nodes() == 4);
+  assert(og1.edges() == 3);
+  assert(og1.existsEdge('a', 'a'));
+  assert(og1.existsEdge('a', 'd'));
+  assert(og1.existsEdge('c', 'c'));
+  assert(!og1.existsEdge('d', 'a'));
+  assert(!og1.existsEdge('e', 'e'));
 
   //check that og2 is identical to og1
-  M_ASSERT(og2.nodes() == 4);
-  M_ASSERT(og2.edges() == 3);
-  M_ASSERT(og2.existsEdge('a', 'a'));
-  M_ASSERT(og2.existsEdge('a', 'd'));
-  M_ASSERT(og2.existsEdge('c', 'c'));
-  M_ASSERT(!og2.existsEdge('d', 'a'));
-  M_ASSERT(!og2.existsEdge('e', 'e'));
+  assert(og2.nodes() == 4);
+  assert(og2.edges() == 3);
+  assert(og2.existsEdge('a', 'a'));
+  assert(og2.existsEdge('a', 'd'));
+  assert(og2.existsEdge('c', 'c'));
+  assert(!og2.existsEdge('d', 'a'));
+  assert(!og2.existsEdge('e', 'e'));
 
   og1.removeNode('a');
   og1.removeNode('d');
 
   //check that og1 modified correctly
-  M_ASSERT(og1.nodes() == 2);
-  M_ASSERT(og1.edges() == 1);
-  M_ASSERT(og1.existsEdge('c', 'c'));
-  M_ASSERT(!og1.existsEdge('a', 'a'));
-  M_ASSERT(!og1.existsEdge('a', 'd'));
-  M_ASSERT(!og1.existsEdge('d', 'a'));
-  M_ASSERT(!og1.existsEdge('e', 'e'));
+  assert(og1.nodes() == 2);
+  assert(og1.edges() == 1);
+  assert(og1.existsEdge('c', 'c'));
+  assert(!og1.existsEdge('a', 'a'));
+  assert(!og1.existsEdge('a', 'd'));
+  assert(!og1.existsEdge('d', 'a'));
+  assert(!og1.existsEdge('e', 'e'));
 
   //check that og2 is intact
-  M_ASSERT(og2.nodes() == 4);
-  M_ASSERT(og2.edges() == 3);
-  M_ASSERT(og2.existsEdge('a', 'a'));
-  M_ASSERT(og2.existsEdge('a', 'd'));
-  M_ASSERT(og2.existsEdge('c', 'c'));
-  M_ASSERT(!og2.existsEdge('d', 'a'));
-  M_ASSERT(!og2.existsEdge('e', 'e'));
+  assert(og2.nodes() == 4);
+  assert(og2.edges() == 3);
+  assert(og2.existsEdge('a', 'a'));
+  assert(og2.existsEdge('a', 'd'));
+  assert(og2.existsEdge('c', 'c'));
+  assert(!og2.existsEdge('d', 'a'));
+  assert(!og2.existsEdge('e', 'e'));
 
 }
 
@@ -398,12 +398,12 @@ void test_copy_assignment(){
   og1.addEdge('x', 'y');
   og1.addEdge('y', 'x');
 
-  M_ASSERT(og1.nodes() == 3);
-  M_ASSERT(og1.edges() == 4);
-  M_ASSERT(og1.existsEdge('x', 'x'));
-  M_ASSERT(og1.existsEdge('y', 'y'));
-  M_ASSERT(og1.existsEdge('x', 'y'));
-  M_ASSERT(og1.existsEdge('y', 'x'));
+  assert(og1.nodes() == 3);
+  assert(og1.edges() == 4);
+  assert(og1.existsEdge('x', 'x'));
+  assert(og1.existsEdge('y', 'y'));
+  assert(og1.existsEdge('x', 'y'));
+  assert(og1.existsEdge('y', 'x'));
 
   char nodes2[] = {'a', 'b', 'c', 'd'};
   oriented_graph<char, equal_char> og2(nodes2, sizeof(nodes2)/sizeof(nodes2[0]));
@@ -411,42 +411,42 @@ void test_copy_assignment(){
   og2.addEdge('a', 'd');
   og2.addEdge('c', 'c');
 
-  M_ASSERT(og2.nodes() == 4);
-  M_ASSERT(og2.edges() == 3);
-  M_ASSERT(og2.existsEdge('a', 'a'));
-  M_ASSERT(og2.existsEdge('a', 'd'));
-  M_ASSERT(og2.existsEdge('c', 'c'));
-  M_ASSERT(!og2.existsEdge('d', 'a'));
-  M_ASSERT(!og2.existsEdge('e', 'e'));
+  assert(og2.nodes() == 4);
+  assert(og2.edges() == 3);
+  assert(og2.existsEdge('a', 'a'));
+  assert(og2.existsEdge('a', 'd'));
+  assert(og2.existsEdge('c', 'c'));
+  assert(!og2.existsEdge('d', 'a'));
+  assert(!og2.existsEdge('e', 'e'));
 
   og2 = og1;
 
   //check that information was copied correctly
-  M_ASSERT(og2.nodes() == 3);
-  M_ASSERT(og2.edges() == 4);
-  M_ASSERT(og2.existsEdge('x', 'x'));
-  M_ASSERT(og2.existsEdge('y', 'y'));
-  M_ASSERT(og2.existsEdge('x', 'y'));
-  M_ASSERT(og2.existsEdge('y', 'x'));
+  assert(og2.nodes() == 3);
+  assert(og2.edges() == 4);
+  assert(og2.existsEdge('x', 'x'));
+  assert(og2.existsEdge('y', 'y'));
+  assert(og2.existsEdge('x', 'y'));
+  assert(og2.existsEdge('y', 'x'));
 
   og2.removeNode('x');
 
   //check that og2 changed succesfully
-  M_ASSERT(og2.nodes() == 2);
-  M_ASSERT(og2.edges() == 1);
-  M_ASSERT(og2.existsEdge('y', 'y'));
-  M_ASSERT(!og2.existsEdge('z', 'z'));
-  M_ASSERT(!og2.existsEdge('x', 'x'));
-  M_ASSERT(!og2.existsEdge('x', 'y'));
-  M_ASSERT(!og2.existsEdge('y', 'x'));
+  assert(og2.nodes() == 2);
+  assert(og2.edges() == 1);
+  assert(og2.existsEdge('y', 'y'));
+  assert(!og2.existsEdge('z', 'z'));
+  assert(!og2.existsEdge('x', 'x'));
+  assert(!og2.existsEdge('x', 'y'));
+  assert(!og2.existsEdge('y', 'x'));
 
   //check that changes in og2 didn't affect og1
-  M_ASSERT(og1.nodes() == 3);
-  M_ASSERT(og1.edges() == 4);
-  M_ASSERT(og1.existsEdge('x', 'x'));
-  M_ASSERT(og1.existsEdge('y', 'y'));
-  M_ASSERT(og1.existsEdge('x', 'y'));
-  M_ASSERT(og1.existsEdge('y', 'x'));
+  assert(og1.nodes() == 3);
+  assert(og1.edges() == 4);
+  assert(og1.existsEdge('x', 'x'));
+  assert(og1.existsEdge('y', 'y'));
+  assert(og1.existsEdge('x', 'y'));
+  assert(og1.existsEdge('y', 'x'));
 
 }
 
@@ -458,30 +458,30 @@ void test_iterator(){
   oriented_graph<char, equal_char>::const_iterator a = og.begin();
 
   //test access
-  M_ASSERT(*a == 'a');
+  assert(*a == 'a');
 
   //test post increment
-  M_ASSERT(*(a++) == 'a');
-  M_ASSERT(*a == 'b');
+  assert(*(a++) == 'a');
+  assert(*a == 'b');
 
   //test pre increment
-  M_ASSERT(*(++a) == 'c');
-  M_ASSERT(*a == 'c');
+  assert(*(++a) == 'c');
+  assert(*a == 'c');
 
   //test equality, and access boundaries
   a++;
-  M_ASSERT(a == og.end());
+  assert(a == og.end());
 
   //test assignment operator
   a = og.begin();
-  M_ASSERT(*a == 'a');
+  assert(*a == 'a');
 
   //empty iterator
   oriented_graph<int, equal_int> og1;
-  M_ASSERT(og1.begin() == og1.end());
+  assert(og1.begin() == og1.end());
 
   og1.addNode(1);
-  M_ASSERT(++og1.begin() == og1.end());
+  assert(++og1.begin() == og1.end());
 
   //test basic usage
   og1.addNode(2);
@@ -489,7 +489,7 @@ void test_iterator(){
   for(oriented_graph<int, equal_int>::const_iterator i = og1.begin(); i != og1.end(); i++){
     sum += *i;
   }
-  M_ASSERT(sum == 3);
+  assert(sum == 3);
 }
 
 
@@ -503,7 +503,4 @@ int main(){
   test_copy_constructor();
   test_copy_assignment();
   test_iterator();
-
-  // Print test summary
-  testFramework::summary();
 }
