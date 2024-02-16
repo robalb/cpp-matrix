@@ -1,6 +1,6 @@
 /**
  * @file animal.hpp
- * @brief header file implementing an animal class, used in main for class tests
+ * @brief header file implementing an animal class, used in main for custom type tests
  */
 
 #ifndef ANIMAL_HPP
