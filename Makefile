@@ -1,17 +1,21 @@
 CXX = g++
 CXX_TEST = g++
+CXX_COV = g++
 
 LINK_TARGET = main.exe
 LINK_TARGET_TEST = main.test.exe
+LINK_TARGET_COV = main.cov.exe
 
 CXXFLAGS = -Wall
 CXXFLAGS_TEST = -Wall -Wextra -g3 -O0 \
 								-fsanitize=address,undefined
+CXXFLAGS_COV = -Wall -fprofile-arcs -ftest-coverage
 
 CXXINCLUDES = .
 CXXINCLUDES_TEST = .
+CXXINCLUDES_COV = .
 
-#----------------
+#------ production build ----------
 
 $(LINK_TARGET): main.o 
 	$(CXX) $(CXXFLAGS) -o $@ $^
@@ -19,7 +23,30 @@ $(LINK_TARGET): main.o
 main.o: main.cpp ograph.hpp
 	$(CXX) $(CXXFLAGS) -I$(CXXINCLUDES) -o $@ -c main.cpp
 
+#------- code coverage build ---------
+
+$(LINK_TARGET_COV): main.o 
+	$(CXX_COV) $(CXXFLAGS_COV) -o $@ $^
+
+main.o: main.cpp ograph.hpp
+	$(CXX_COV) $(CXXFLAGS_COV) -I$(CXXINCLUDES_COV) -o $@ -c main.cpp
+
+#-------- asan test build --------
+
+$(LINK_TARGET_TEST): main.test.o 
+	$(CXX_TEST) $(CXXFLAGS_TEST) -o $@ $^
+
+main.test.o: main.cpp ograph.hpp
+	$(CXX_TEST) $(CXXFLAGS_TEST) -I$(CXXINCLUDES_TEST) -o $@ -c main.cpp
+
 #----------------
+
+.PHONY: coverage
+coverage: $(LINK_TARGET_COV)
+	./$(LINK_TARGET_COV)
+	gcov main.cpp
+	echo "lines without coverage:"
+	cat ograph.hpp.gcov | grep =====
 
 .PHONY: test
 test: $(LINK_TARGET_TEST)
@@ -34,17 +61,9 @@ debug: $(LINK_TARGET_TEST)
 leaktest: $(LINK_TARGET)
 	valgrind --leak-check=full ./$(LINK_TARGET) 
 
-$(LINK_TARGET_TEST): main.test.o 
-	$(CXX_TEST) $(CXXFLAGS_TEST) -o $@ $^
-
-main.test.o: main.cpp ograph.hpp
-	$(CXX_TEST) $(CXXFLAGS_TEST) -I$(CXXINCLUDES_TEST) -o $@ -c main.cpp
-
-#----------------
-
 .PHONY: clean
 clean:
-	rm *.o *.exe
+	rm *.o *.exe *.gcov *.gcda *.gcno
 
 .PHONY: doc
 doc:
