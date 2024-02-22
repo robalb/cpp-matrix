@@ -1,8 +1,12 @@
 main
 main.exe
 main.test.exe
+main.cov.exe
+main.gcda
+main.gcno
 *.elf
 *.so
 *.o
 *.gch
+*.gcov
 html/

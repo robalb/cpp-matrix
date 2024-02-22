@@ -7,9 +7,8 @@ LINK_TARGET_TEST = main.test.exe
 LINK_TARGET_COV = main.cov.exe
 
 CXXFLAGS = -Wall
-CXXFLAGS_TEST = -Wall -Wextra -g3 -O0 \
-								-fsanitize=address,undefined
-CXXFLAGS_COV = -Wall -fprofile-arcs -ftest-coverage
+CXXFLAGS_TEST = -Wall -Wextra -g3 -O0 -fsanitize=address,undefined
+CXXFLAGS_COV = -g3 -O0 -fprofile-arcs -ftest-coverage
 
 CXXINCLUDES = .
 CXXINCLUDES_TEST = .
@@ -25,10 +24,10 @@ main.o: main.cpp ograph.hpp
 
 #------- code coverage build ---------
 
-$(LINK_TARGET_COV): main.o 
+$(LINK_TARGET_COV): main.cov.o 
 	$(CXX_COV) $(CXXFLAGS_COV) -o $@ $^
 
-main.o: main.cpp ograph.hpp
+main.cov.o: main.cpp ograph.hpp
 	$(CXX_COV) $(CXXFLAGS_COV) -I$(CXXINCLUDES_COV) -o $@ -c main.cpp
 
 #-------- asan test build --------
@@ -44,9 +43,13 @@ main.test.o: main.cpp ograph.hpp
 .PHONY: coverage
 coverage: $(LINK_TARGET_COV)
 	./$(LINK_TARGET_COV)
-	gcov main.cpp
+	gcov main.cov.cpp -Hfmqr #-k
 	echo "lines without coverage:"
-	cat ograph.hpp.gcov | grep =====
+	cat ograph.hpp.gcov | grep "#####"
+
+.PHONY: coverage_explore
+coverage_explore: coverage
+	grep --color=always '#####\|$$' ograph.hpp.gcov | less -R
 
 .PHONY: test
 test: $(LINK_TARGET_TEST)
