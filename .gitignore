@@ -2,8 +2,8 @@ main
 main.exe
 main.test.exe
 main.cov.exe
-main.gcda
-main.gcno
+main.cov.gcda
+main.cov.gcno
 *.elf
 *.so
 *.o
