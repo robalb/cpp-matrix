@@ -174,7 +174,7 @@ class oriented_graph {
      * @post _nodes != nullptr
      * @post _matrix != nullptr
      */
-    oriented_graph(T* nodes, size_type size) : _size(0), _nodes(nullptr), _matrix(nullptr) {
+    oriented_graph(const T* nodes, const size_type size) : _size(0), _nodes(nullptr), _matrix(nullptr) {
       for(size_type i=0; i<size; i++){
         addNode(nodes[i]);
       }
@@ -468,7 +468,7 @@ class oriented_graph {
      * @throw invalidEdgeException the edge does not exist
      * @post _matrix[i][j] != _matrix[i][j]
      */
-    void removeEdge(T nodeFrom, T nodeTo){
+    void removeEdge(const T &nodeFrom, const T &nodeTo){
       if(!existsEdge(nodeFrom, nodeTo))
         throw invalidEdgeException();
 
