@@ -14,14 +14,13 @@ Points:
 
 Il makefile include delle feature extra che semplificano la vita:
 
-- `make test` compila ed esegue il programma usando `ASAN`, una instrumentazione simile a valgrind che riconosce
- errori a runtime. Se il programma ha errori di memoria, verrà stampato il punto esatto del codice responsabile.
+- `make test` compila ed esegue il programma usando [ASAN](https://www.cse.unsw.edu.au/%7Elearn/debugging/modules/asan/), una instrumentazione simile a valgrind che riconosce
+ errori a runtime. Se il programma ha errori di memoria, verrà stampato il tipo di errore e il punto esatto del codice responsabile.
 
 - `make coverage` (solo su linux, utilizza i programmi less, grep, e gcov) Mostra quali parti del codice della matrice non sono
   state eseguite durante i test. Le righe non eseguite iniziano con `#####`.
   Per chiudere il programma premere `q`. Per passare alla riga non eseguita successiva o precedente premere `n` o `N`.
 
-- `make lint` 
 
 ## Note
 
@@ -31,7 +30,7 @@ Il prof si aspetta una implementazione diversa tramite una classe matrice, poich
 Tuttavia:
 
 - Implementare la matrice tramite classe aumenta notevolmente le linee di codice, e quindi la "superfice di attacco" su cui il prof può trovare errori.
-- implementare la matrice tramite `int **` richiede buona comprensione della gestione della memoria, e test manuali su errori di allocazione. vedi [questo esempio](https://github.com/robalb/cpp-matrix/blob/88d0a004d8a20a0ec19af3287682296c2559b9bf/ograph.hpp#L346) Nella documentazione, giustificare questa scelta
+- implementare la matrice tramite `int **` richiede buona comprensione della gestione della memoria, e test manuali su errori di allocazione. vedi [questo esempio](https://github.com/robalb/cpp-matrix/blob/88d0a004d8a20a0ec19af3287682296c2559b9bf/ograph.hpp#L346) ma richiede anche meno codice
 
 
 Questo perchè se ci sono errori al momento dell'allocazione di memoria della matrice il suo distruttore verrà chiamato automaticamente al momento dell'unwind dello stack. 
