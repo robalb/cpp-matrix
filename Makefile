@@ -40,15 +40,15 @@ main.test.o: main.cpp ograph.hpp
 
 #----------------
 
-.PHONY: coverage
-coverage: $(LINK_TARGET_COV)
+.PHONY: coverage_lines
+coverage_lines: $(LINK_TARGET_COV)
 	./$(LINK_TARGET_COV)
 	gcov main.cov.cpp -Hfmqr #-k
 	echo "lines without coverage:"
 	cat ograph.hpp.gcov | grep "#####"
 
-.PHONY: coverage_explore
-coverage_explore: coverage
+.PHONY: coverage
+coverage: coverage_lines
 	grep --color=always '#####\|$$' ograph.hpp.gcov | less -R
 
 .PHONY: test
