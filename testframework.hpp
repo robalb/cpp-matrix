@@ -30,11 +30,11 @@
   catch(...){                                     \
     testFramework_caught = assertCaught::wrong;   \
   }                                               \
-  testFramework_assert_throw(                     \
+  assert(testFramework_assert_throw(              \
       testFramework_caught,                       \
       #__expr,                                    \
       #__type                                     \
-      );                                          \
+      ));                                         \
 }
 
 
@@ -51,7 +51,7 @@ assertCaught testFramework_caught = assertCaught::none;
 /**
  * test framework assert throw, use via macro expansion
  */
-inline void testFramework_assert_throw(assertCaught result, std::string expr, std::string type){
+inline bool testFramework_assert_throw(assertCaught result, std::string expr, std::string type){
   if(result != assertCaught::correct){
     std::cout << "---------------------------" << std::endl;
     std::cout << "FAILED: " << expr << std::endl;
@@ -61,5 +61,6 @@ inline void testFramework_assert_throw(assertCaught result, std::string expr, st
     else
       std::cout << "none" << std::endl;
   }
+  return result == assertCaught::correct;
 }
 

@@ -56,8 +56,8 @@ test: $(LINK_TARGET_TEST)
 	./$(LINK_TARGET_TEST)
 
 .PHONY: debug
-debug: $(LINK_TARGET_TEST)
-	gdb ./$(LINK_TARGET_TEST)
+debug: $(LINK_TARGET)
+	gdb ./$(LINK_TARGET)
 
 #valgrind must run on LINK_TARGET, the build without asan
 .PHONY: leaktest

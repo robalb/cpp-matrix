@@ -170,17 +170,31 @@ class oriented_graph {
      * @param size the nodes list size
      *
      * @throw std::bad_alloc 
+     * @throw invalidNodeException there are duplicate nodes in the provided nodes list
      * @post _size = size
      * @post _nodes != nullptr
      * @post _matrix != nullptr
      */
-    oriented_graph(const T* nodes, const size_type size) : _size(0), _nodes(nullptr), _matrix(nullptr) {
-      for(size_type i=0; i<size; i++){
-        addNode(nodes[i]);
-      }
+    oriented_graph(const T* const nodes, const size_type size) : _size(0), _nodes(nullptr), _matrix(nullptr) {
       #ifndef NDEBUG 
       std::cout<<"oriented_graph(nodes, size)"<<std::endl;
       #endif
+
+      try{
+        for(size_type i=0; i<size; i++){
+          addNode(nodes[i]);
+        }
+      }
+      catch(...){
+        #ifndef NDEBUG 
+        std::cout<<"exception in oriented_graph(nodes, size)"<<std::endl;
+        #endif   
+        //objects that throw exceptions in the constructors are considered not initialized
+        //therefore their destructor will not be called in the stack unwind mechanism.
+        //we must free the content ourselves to avoid memory leaks.
+        _clear();
+        throw;
+      }
     }
 
     /**

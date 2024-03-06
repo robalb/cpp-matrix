@@ -33,10 +33,6 @@ Tuttavia:
 - implementare la matrice tramite `int **` richiede buona comprensione della gestione della memoria, e test manuali su errori di allocazione. vedi [questo esempio](https://github.com/robalb/cpp-matrix/blob/88d0a004d8a20a0ec19af3287682296c2559b9bf/ograph.hpp#L346) ma richiede anche meno codice
 
 
-Questo perchè se ci sono errori al momento dell'allocazione di memoria della matrice il suo distruttore verrà chiamato automaticamente al momento dell'unwind dello stack. 
-Se si gestisce la matrice manualmente all'interno della classe grafo con un `int **`, dovremo pensare noi a chiamare free in caso di errori di allocazione.
-
-
 ## penalizzazioni comuni progetto c++
 
 - test insufficenti (-2)
