@@ -3,7 +3,7 @@
 This is my implementation of the oriented graph for the cpp course at unimib.
 
 Points:
-- 30/30
+- 26/26
 - +2 for custom exceptions
 - +2 for extended code coverage
 

@@ -38,68 +38,6 @@ struct equal_animal {
   }
 };
 
-void test_custom_class_2(){
-  std::cout << "====== TEST_CUSTOM_CLASS 2 ======" << std::endl;
-
-  animal duck1 = animal(true, 2);
-  animal duck2 = animal(true, 2);
-  animal spider1 = animal(false, 8);
-  animal spider2 = animal(false, 7);//born without one leg, but it's not affecting its life too much
-  animal cat1 = animal(false, 4);
-
-  animal invalid_animals[] = {duck1, duck2, cat1};
-  animal valid_animals[] = {duck1, spider1, cat1};
-
-  //test duplicate nodes in constructor
-  oriented_graph<animal, equal_animal> *invalid_og = nullptr;
-  M_ASSERT_THROW(
-    (invalid_og = new oriented_graph<animal, equal_animal>(invalid_animals, 3)),
-    invalidNodeException
-  );
-  delete invalid_og;
-
-  //valid nodes in constructor
-  oriented_graph<animal, equal_animal> og(valid_animals, 3);
-
-  assert(og.nodes() == 3);
-  assert(og.edges() == 0);
-  assert(og.existsNode(duck1));
-  assert(og.existsNode(spider1));
-  assert(og.existsNode(cat1));
-
-  og.addEdge(duck1, duck1);
-  assert(og.edges() == 1);
-  assert(og.existsEdge(duck1, duck1));
-  assert(og.existsEdge(duck1, duck2));
-  og.removeEdge(duck1, duck1);
-  assert(og.edges() == 0);
-  assert(!og.existsEdge(duck1, duck1));
-  assert(!og.existsEdge(duck1, duck2));
-  assert(!og.existsEdge(duck1, spider2));
-
-  og.removeNode(duck1);
-  assert(og.nodes() == 2);
-  assert(og.edges() == 0);
-  assert(!og.existsNode(duck1));
-  assert(og.existsNode(spider1));
-  assert(og.existsNode(cat1));
-
-  og.removeNode(cat1);
-  assert(og.nodes() == 1);
-  assert(og.edges() == 0);
-  assert(!og.existsNode(duck1));
-  assert(og.existsNode(spider1));
-  assert(!og.existsNode(cat1));
-
-  og.removeNode(spider1);
-  assert(og.nodes() == 0);
-  assert(og.edges() == 0);
-  assert(!og.existsNode(duck1));
-  assert(!og.existsNode(spider1));
-  assert(!og.existsNode(cat1));
-
-}
-
 void test_custom_class(){
   std::cout << "====== TEST_CUSTOM_CLASS ======" << std::endl;
 
@@ -167,6 +105,69 @@ void test_custom_class(){
   assert(og2.edges() == 0);
   assert(!og2.existsNode(duck1));
 }
+
+void test_custom_class_2(){
+  std::cout << "====== TEST_CUSTOM_CLASS 2 ======" << std::endl;
+
+  animal duck1 = animal(true, 2);
+  animal duck2 = animal(true, 2);
+  animal spider1 = animal(false, 8);
+  animal spider2 = animal(false, 7);//born without one leg, but it's not affecting its life too much
+  animal cat1 = animal(false, 4);
+
+  animal invalid_animals[] = {duck1, duck2, cat1};
+  animal valid_animals[] = {duck1, spider1, cat1};
+
+  //test duplicate nodes in constructor
+  oriented_graph<animal, equal_animal> *invalid_og = nullptr;
+  M_ASSERT_THROW(
+    (invalid_og = new oriented_graph<animal, equal_animal>(invalid_animals, 3)),
+    invalidNodeException
+  );
+  delete invalid_og;
+
+  //valid nodes in constructor
+  oriented_graph<animal, equal_animal> og(valid_animals, 3);
+
+  assert(og.nodes() == 3);
+  assert(og.edges() == 0);
+  assert(og.existsNode(duck1));
+  assert(og.existsNode(spider1));
+  assert(og.existsNode(cat1));
+
+  og.addEdge(duck1, duck1);
+  assert(og.edges() == 1);
+  assert(og.existsEdge(duck1, duck1));
+  assert(og.existsEdge(duck1, duck2));
+  og.removeEdge(duck1, duck1);
+  assert(og.edges() == 0);
+  assert(!og.existsEdge(duck1, duck1));
+  assert(!og.existsEdge(duck1, duck2));
+  assert(!og.existsEdge(duck1, spider2));
+
+  og.removeNode(duck1);
+  assert(og.nodes() == 2);
+  assert(og.edges() == 0);
+  assert(!og.existsNode(duck1));
+  assert(og.existsNode(spider1));
+  assert(og.existsNode(cat1));
+
+  og.removeNode(cat1);
+  assert(og.nodes() == 1);
+  assert(og.edges() == 0);
+  assert(!og.existsNode(duck1));
+  assert(og.existsNode(spider1));
+  assert(!og.existsNode(cat1));
+
+  og.removeNode(spider1);
+  assert(og.nodes() == 0);
+  assert(og.edges() == 0);
+  assert(!og.existsNode(duck1));
+  assert(!og.existsNode(spider1));
+  assert(!og.existsNode(cat1));
+
+}
+
 
 void test_custom_class_iterator(){
   std::cout << "====== TEST_CUSTOM_CLASS_ITERATOR ======" << std::endl;
@@ -578,6 +579,7 @@ void test_iterator(){
 
 int main(){
   test_custom_class();
+  test_custom_class_2();
   test_custom_class_iterator();
   test_class_behaviour();
   test_basic_behaviour();
@@ -587,5 +589,4 @@ int main(){
   test_copy_constructor();
   test_copy_assignment();
   test_iterator();
-  test_custom_class_2();
 }
