@@ -24,6 +24,8 @@ Il makefile include delle feature extra che semplificano la vita:
 
 ## Note
 
+Implementazione grafo orientato - progetto cpp bicocca:
+
 La matrice di adiacenza per il grafo orientato è implementata tramite matrice di interi: `int **`.
 Il prof si aspetta una implementazione diversa tramite una classe matrice, poichè è un sistema che porta a meno errori di memoria.
 
